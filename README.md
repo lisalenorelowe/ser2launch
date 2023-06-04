@@ -1,12 +1,14 @@
+# Ser2launch
+
 Program: launch
 
 Developer:  Lisa L. Lowe, lisalenorelowe@gmail.com 
 
-Originally for OIT-HPC, NCSU
+Originally for OIT-HPC@NCSU
 
 Purpose: Bundles a series of serial jobs by distributing the commands listed in a file
 
-Use:
+## Run command
 
 To use on Henry2 via LSF (this goes in your batch script):
 ```
@@ -17,21 +19,24 @@ For general use:
 ```
 mpirun -n [MPI tasks] ./launch [input file]
 ```    
- 
+
+## Instructions to compile and submit a batch job
+
 Get the application and enter the directory:
 ```
-git clone https://github.ncsu.edu/lllowe/launch.git
-cd launch
+git clone https://github.com/lisalenorelowe/ser2launch.git
+cd ser2launch
 ```    
 
-Compile the application, assuming IntelMPI compler:
+Compile the application, this assumes an Intel MPI environment:
 ```
 module load PrgEnv-intel
 source makeit.sh
 ```
 
-Change `makeit.sh` to compile the application with "debug" for extra write statements to check the filename and that commands were sent/recieved properly:
-```    
+For extra write statements to check the filename and that commands were sent/recieved properly, change `makeit.sh` to compile the application with "debug".
+```  
+#For extra debugging, uncomment this line in makeit.sh
 mpiif90 -o launch -Ddebug launch.F90    
 ```
 
@@ -55,23 +60,27 @@ To run your own cases, either modify commands.txt, or change the name of the inp
 mpirun ./launch my_commands.txt
 ```  
 
-Limitations:
+## Limitations
 
 In the Fortran code, the number of characters allowed in a command line is 200.  You can modify the code directly to change that number.  If you do that, remember to recompile the code.
 
 
-Warnings:
+## Warnings
 
-- Check your local HPC documentation for instructions on loading an MPI environment and submitting jobs.
-- Also, if all of your tasks take 5 minutes and one takes an hour, many cores will be idle
-while waiting on the outstanding task to finish.  That is usually not considered as acceptable use.  Please be mindful
+**Acceptable Use**
+
+Check your local HPC documentation for instructions on loading an MPI environment and submitting jobs. Also, if all of your tasks take 5 minutes and one takes an hour, many cores will be idle while waiting on the outstanding task to finish.  That is usually not considered as acceptable use.  Please be mindful
 of this.
-- If you are running a very short task using a software that takes a while to load, it can cause problems or even crash a node.  In particular, I've seen this with MATLAB.  If you have a simple task, try built in loop parallelization, e.g., foreach/dopar(R) and search up keywords 'parallel pool' for the latest Python and MATLAB.  
 
-A sample MATLAB parallel loop is in this repo: [par_matlab](par_matlab). 
+**For short tasks with overhead**
 
+If you are running a very short task using a software that takes a while to load, it can cause problems or even crash a node.  In particular, I've seen this with MATLAB.  If you have a very simple and short task, try built in loop parallelization for the software, e.g., foreach/dopar(R) and search up keywords 'parallel pool' for the latest Python and MATLAB recommendations.  
 
-THIS IS BETA VERSION!  There is no error checking of individual commands as of yet.  Use of this software is at your own risk.
+This repo includes a sample MATLAB parallel loop: [par_matlab](par_matlab). 
+
+**Also**
+
+CONSIDER THIS A BETA VERSION!  There is no error checking of individual commands as of yet.  Use of this software is at your own risk.
 
 ----
 
